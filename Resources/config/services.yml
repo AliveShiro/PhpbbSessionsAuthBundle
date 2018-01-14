@@ -15,6 +15,6 @@ services:
             - "%phpbb_sessions_auth.session.boardurl%"
             - "%phpbb_sessions_auth.session.loginpage%"
             - "%phpbb_sessions_auth.session.force_login%"
-            - "%secret%"
+            - "%kernel.secret%"
             - "@request_stack"
 

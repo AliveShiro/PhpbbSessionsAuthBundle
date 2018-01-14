@@ -12,6 +12,6 @@ namespace phpBB\SessionsAuthBundle;
 
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 
-class phpbbSessionsAuthBundle extends Bundle
+class phpBBSessionsAuthBundle extends Bundle
 {
 }

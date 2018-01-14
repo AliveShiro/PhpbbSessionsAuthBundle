@@ -6,6 +6,7 @@
     "intergration",
     "bridge"
   ],
+  "version": "1.0",
   "type": "symfony-bundle",
   "homepage": "http://www.phpbb.com",
   "license": "MIT",
@@ -35,10 +36,5 @@
   "minimum-stability": "dev",
   "autoload": {
     "psr-4": {"phpBB\\SessionsAuthBundle\\": ""}
-  },
-  "extra": {
-    "branch-alias": {
-      "dev-master": "1.0.0-dev"
-    }
   }
 }
