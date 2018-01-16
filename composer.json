@@ -6,7 +6,7 @@
     "intergration",
     "bridge"
   ],
-  "version": "1.0",
+  "version": "1.0.2",
   "type": "symfony-bundle",
   "homepage": "http://www.phpbb.com",
   "license": "MIT",

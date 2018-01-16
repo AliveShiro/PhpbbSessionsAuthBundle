@@ -1,16 +1,14 @@
 <?php
-
 /**
- *
- * @package phpBBSessionsAuthBundle
+ * @package       phpBBSessionsAuthBundle
  * @copyright (c) phpBB Limited <https://www.phpbb.com>
- * @license MIT
- *
+ * @license       MIT
  */
 
 namespace phpBB\SessionsAuthBundle\Security;
 
 use Doctrine\Common\Persistence\ManagerRegistry;
+use Doctrine\ORM\EntityManager;
 use phpBB\SessionsAuthBundle\Entity\Session;
 use phpBB\SessionsAuthBundle\Entity\User;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -31,8 +29,8 @@ class PhpbbUserProvider implements UserProviderInterface
     private $roles = [];
 
     /**
-     * @param EntityManager $entityManager
-     * @param string $entity
+     * @param ManagerRegistry $managerRegistry
+     * @param string          $entity
      */
     public function __construct(ManagerRegistry $managerRegistry, $entity)
     {
@@ -48,7 +46,12 @@ class PhpbbUserProvider implements UserProviderInterface
     }
 
     /**
-     * @param $apiKey
+     * @param $sessionId
+     * @param $expectedUserId
+     * @param $userIp
+     *
+     * @return null
+     * @throws \Doctrine\ORM\NonUniqueResultException
      */
     public function getUsernameForSessionId($sessionId, $expectedUserId, $userIp)
     {
@@ -65,21 +68,27 @@ class PhpbbUserProvider implements UserProviderInterface
             ->getQuery()
             ->getOneOrNullResult();
 
-        if ( //check if have session and cookie ip (v6 or v4) are equal to session id
-            !$session
-            || (
-                strpos($session->getIp(), ':') !== false
-                && strpos($userIp, ':') !== false
-                && $this->shortIpv6($session->getIp(), 3) !== $this->shortIpv6($userIp, 3)
-            )
-            || substr($session->getIp(), 0, strrpos($session->getIp(), '.')) !== substr($userIp, 0, strrpos($userIp, '.'))
+        if (!$session) {
+            return null;
+        }
+
+        $ipv6Invalid = (
+            strpos($session->getIp(), ':') !== false
+            && strpos($userIp, ':') !== false
+            && $this->shortIpv6($session->getIp(), 3) !== $this->shortIpv6($userIp, 3)
+        );
+
+        $ipInvalid = substr($session->getIp(), 0, strrpos($session->getIp(), '.')) !== substr($userIp, 0, strrpos($userIp, '.'));
+
+        //check if have session and cookie ip (v6 or v4) are equal to session id
+        if (!$session || $ipv6Invalid || $ipInvalid
         ) {
             return null;
         }
 
         //update session time each minute like phpBB does
         $now = time();
-        if($now - $session->getTime() >= 60) {
+        if ($now - $session->getTime() >= 60) {
             $session->setTime($now);
             $this->entityManager->flush();
         }
@@ -89,7 +98,9 @@ class PhpbbUserProvider implements UserProviderInterface
 
     /**
      * @param string $username
+     *
      * @return UserInterface|void
+     * @throws \Exception
      */
     public function loadUserByUsername($username)
     {
@@ -107,16 +118,18 @@ class PhpbbUserProvider implements UserProviderInterface
         $roles = [];
         foreach ($user->getGroups() as $group) {
             if (!isset($this->roles[$group->getGroupId()])) {
-                throw new \Exception("Roles provided in configuration don't have id ".$group->getGroupId(), 1);
+                throw new \Exception("Role provided in configuration don't include #" . $group->getGroupId(), 1);
             }
-            $roles[$group->getGroupId()] = 'ROLE_'.strtoupper($this->roles[$group->getGroupId()]);
+            $roles[$group->getGroupId()] = $this->roles[$group->getGroupId()];
         }
-        uksort($roles, function($a, $b) use ($user) { return $a <> $user->getGroupId(); });
+        uksort($roles, function ($a, $b) use ($user) { return $a <> $user->getGroupId(); });
+
         return $user->setRoles($roles);
     }
 
     /**
      * @param UserInterface $user
+     *
      * @return UserInterface|void
      */
     public function refreshUser(UserInterface $user)
@@ -126,6 +139,7 @@ class PhpbbUserProvider implements UserProviderInterface
 
     /**
      * @param string $class
+     *
      * @return bool
      */
     public function supportsClass($class)
@@ -140,10 +154,11 @@ class PhpbbUserProvider implements UserProviderInterface
      * If length is greater than 3 the complete IP will be returned
      *
      * @copyright (c) phpBB Limited <https://www.phpbb.com>
-     * @license GNU General Public License, version 2 (GPL-2.0)
+     * @license       GNU General Public License, version 2 (GPL-2.0)
      *
-     * @param string $ip
+     * @param string  $ip
      * @param integer $length
+     *
      * @return mixed|string
      */
     private function shortIpv6($ip, $length)
