@@ -60,13 +60,12 @@ phpbb_sessions_auth:
         entity_manager: "forum" # must match the key bellow doctrine.orm.entity_managers
         prefix: "phpbb_" # change this if you do not use the default "phpbb_" prefix
     roles: #relation between group_id from groups table of phpBB and roles of your application
-        1: anonymous #GUESTS
-        2: user #REGISTERED
-        4: moderator #GLOBAL_MODERATORS
-        5: administrator #ADMINISTRATORS
-        6: bot #BOTS
-        7: app_role_name #example of new group create in phpBB and new role in your application
-        8: administrator #you can assing same application roles to various phpBB groups
+        1: ROLE_ANONYMOUS           #GUESTS
+        2: ROLE_USER                #REGISTERED
+        4: ROLE_MODERATOR           #GLOBAL_MODERATORS
+        5: ROLE_ADMIN               #ADMINISTRATORS
+        6: ROLE_BOT                 #BOTS
+        # Keep adding the rest of our phpbb groups to this config
 ```
 
 Update your security file file to match this  (`app/config/security.yml` in Symfony < 4 or `config/packages/security.yaml` in Symfony >= 4):
