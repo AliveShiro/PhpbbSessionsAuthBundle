@@ -1,11 +1,12 @@
 {
-  "name": "telixj/phpbb-sessions-auth-bundle",
+  "name": "macavity/phpbb-sessions-auth-bundle",
   "description": "A symfony bundle that provides symfony the ability to integrate and share sessions with phpBB and use phpBB as the authentication provider.",
   "keywords": [
     "phpBB",
     "intergration",
     "bridge"
   ],
+  "version": "1.0",
   "type": "symfony-bundle",
   "homepage": "http://www.phpbb.com",
   "license": "MIT",
@@ -29,16 +30,11 @@
     "doctrine/orm": "~2.1"
   },
   "require-dev": {
-    "phpunit/phpunit": "4.1.*",
-    "symfony/var-dumper": "~2.3"
+    "phpunit/phpunit": "*",
+    "symfony/var-dumper": "*"
   },
   "minimum-stability": "dev",
   "autoload": {
     "psr-4": {"phpBB\\SessionsAuthBundle\\": ""}
-  },
-  "extra": {
-    "branch-alias": {
-      "dev-master": "1.0.0-dev"
-    }
   }
 }
