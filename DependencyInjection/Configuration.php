@@ -33,6 +33,7 @@ class Configuration implements ConfigurationInterface
                         ->children()
                             ->scalarNode('cookie_name')->isRequired()->end()
                             ->scalarNode('login_page')->defaultValue('ucp.php?mode=login')->cannotBeEmpty()->end()
+                            ->scalarNode('ip_check')->defaultValue(3)->end()
                             ->booleanNode('force_login')->defaultValue(true)->end()
                         ->end()
                     ->end()
