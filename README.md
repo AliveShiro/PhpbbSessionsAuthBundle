@@ -22,14 +22,12 @@ doctrine:
     dbal:
         default_connection: default
         connections:
-            acme: # this is an example for your website's database but it's not required
+            # An example of your website's database connection, just leave it as it is right now
+            default: 
                 driver:   "%database_driver%"
-                host:     "%database_host%"
-                port:     "%database_port%"
-                dbname:   "%database_name%"
-                user:     "%database_user%"
-                password: "%database_password%"
+                url:      "%env(resolve:DATABASE_URL)%"
                 charset:  "UTF8"
+            # Add the configuration to the database of your phpbb instance
             forum:
                 driver:   "%forum_database_driver%"
                 host:     "%forum_database_host%"
@@ -37,12 +35,16 @@ doctrine:
                 dbname:   "%forum_database_name%"
                 user:     "%forum_database_user%"
                 password: "%forum_database_password%"
+                # Alternatively you can of course use: 
+                # url:     "%env(resolve:DATABASE_URL)%"
                 charset:  "UTF8"
 
     orm:
         entity_managers:
-            default: # same here, not required, but you will probably have this in your configuration
+            # Same here, you will probably have this in your configuration
+            default: 
                 connection: default
+            # and add this
             forum:
                 connection: forum
                 mappings:
@@ -53,19 +55,23 @@ Then add the bundle configuration to your config file (`app/config/config.yml` i
 ```yaml
 phpbb_sessions_auth:
     session:
-        cookiename: "phpbb_foo" # must match your forum admin cookie name configuration
-        login_page: "ucp.php?mode=login" # your login page, by default phpbb login page but you can use a custom page
-        force_login: false # if true, anonymous users will be redirected to the login page
+        cookiename: "phpbb_foo"             # Cookie name of your phpbb instance
+        login_page: "ucp.php?mode=login"    # Login page
+        force_login: false                  # if true, anonymous users will be redirected to the login page
+        ip_check: 3,                        # IP address validation will check this amount of digits
+    
     database:
-        entity_manager: "forum" # must match the key bellow doctrine.orm.entity_managers
-        prefix: "phpbb_" # change this if you do not use the default "phpbb_" prefix
-    roles: #relation between group_id from groups table of phpBB and roles of your application
+        entity_manager: "forum"             # must match the key bellow doctrine.orm.entity_managers
+        prefix: "phpbb_"                    # change this if you do not use the default "phpbb_" prefix
+    
+    #relation between group_id from groups table of phpBB and roles of your application
+    roles:                                  
         1: ROLE_ANONYMOUS           #GUESTS
         2: ROLE_USER                #REGISTERED
         4: ROLE_MODERATOR           #GLOBAL_MODERATORS
         5: ROLE_ADMIN               #ADMINISTRATORS
         6: ROLE_BOT                 #BOTS
-        # Keep adding the rest of our phpbb groups to this config
+        # [..] Keep adding the rest of our phpbb groups to this config
 ```
 
 Update your security file file to match this  (`app/config/security.yml` in Symfony < 4 or `config/packages/security.yaml` in Symfony >= 4):
@@ -89,4 +95,5 @@ security:
 There are some few edge functionality missing:
 
   * `"Remember me" key expiration length (in days)` (ie. max_autologin_time) is not used, and thus if this number is grater than 1, the user will not be autamatically logged out unless he goes to the forum.
-  * `Session IP validation` is considered as "A.B.C", no matter what you specified in your Admin Control Panel configuration
+  * "IP Check (ip_check)" has to be configured in package config. 
+  * "Auto Login (allow_autologin)" does not work yet.
