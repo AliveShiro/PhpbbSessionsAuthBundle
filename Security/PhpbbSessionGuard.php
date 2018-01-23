@@ -22,7 +22,7 @@ use Symfony\Component\Security\Guard\AbstractGuardAuthenticator;
 /**
  * @author TeLiXj <telixj@gmail.com>
  */
-class PhpbbSessionAuthenticator extends AbstractGuardAuthenticator
+class PhpbbSessionGuard extends AbstractGuardAuthenticator
 {
     const ANONYMOUS_USER_ID = 1;
     private $cookieName;
