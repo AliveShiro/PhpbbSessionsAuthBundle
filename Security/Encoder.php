@@ -45,13 +45,9 @@ class Encoder extends BasePasswordEncoder
             return false;
         }
 
-        $passwordHasher = new PasswordHash(8, TRUE);
-
-        $hash = $passwordHasher->HashPassword($rawPassword);
+        $passwordHasher = new PhpassPasswordHash(8, TRUE);
 
         return $passwordHasher->CheckPassword($rawPassword, $encoded);
-
-        // return $this->checkPasswordWithHash($rawPassword, $encoded, $salt);
     }
 
     /**

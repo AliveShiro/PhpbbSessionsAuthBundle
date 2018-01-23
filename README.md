@@ -87,7 +87,7 @@ security:
             stateless: true # stateless should be set to true, or your symfony user may be stored in the session even if you logged out from the phpbb instance
             guard:
                 authenticators:
-                    - "phpbb.sessionsauthbundle.phpbb_authenticator"
+                    - "phpbb.sessionsauthbundle.phpbb_session_guard"
 ```
 
 ## Missing functionality
