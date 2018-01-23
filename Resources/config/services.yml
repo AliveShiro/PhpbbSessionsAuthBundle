@@ -19,3 +19,6 @@ services:
         public: false
         arguments: ["@doctrine", "%phpbb_sessions_auth.database.entity_manager%"]
         calls: [[setRoles, ["%phpbb_sessions_auth.roles%"]], [setIpCheckLength, ["%phpbb_sessions_auth.session.ip_check%"]]]
+
+    phpbb.sessionsauthbundle.phpbb_encoder:
+        class:  phpBB\SessionsAuthBundle\Security\Encoder

@@ -1579,14 +1579,6 @@ class User implements UserInterface
     }
 
     /**
-     * @return string
-     */
-    public function getFormSalt()
-    {
-        return $this->formSalt;
-    }
-
-    /**
      * @param boolean $new
      * @return User
      */
@@ -1698,7 +1690,7 @@ class User implements UserInterface
      */
     public function getSalt()
     {
-        return null;
+        return $this->formSalt;
     }
 
     /**
