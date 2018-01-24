@@ -7,6 +7,7 @@ use phpBB\SessionsAuthBundle\Entity\Session;
 use phpBB\SessionsAuthBundle\Entity\User;
 use Symfony\Bridge\Doctrine\ManagerRegistry;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Component\HttpFoundation\Cookie;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\AuthenticationEvents;
 use Symfony\Component\Security\Core\Event\AuthenticationEvent;
@@ -102,7 +103,7 @@ class AuthenticationSubscriber implements EventSubscriberInterface
      */
     private function getCookie($cookieName)
     {
-        $fullCookieName = $this->cookiePrefix . '_' . $cookieName;
+        $fullCookieName = $this->getFullCookieName($cookieName);
 
         if (!$this->request->cookies->has($fullCookieName)) {
             return false;
@@ -111,8 +112,23 @@ class AuthenticationSubscriber implements EventSubscriberInterface
         return $this->request->cookies->get($fullCookieName);
     }
 
+    /**
+     * @param $cookieName
+     * @param $value
+     */
     private function setCookie($cookieName, $value)
     {
-        $this->request->cookies->set($this->cookiePrefix . '_' . $cookieName, $value);
+        $fullCookieName = $this->getFullCookieName($cookieName);
+
+        $this->request->cookies->set($fullCookieName, $value);
+    }
+
+    /**
+     * @param $cookieName
+     *
+     * @return string
+     */
+    private function getFullCookieName($cookieName) {
+        return $this->cookiePrefix . '_' . $cookieName;
     }
 }

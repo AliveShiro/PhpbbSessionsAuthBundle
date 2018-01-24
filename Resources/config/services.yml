@@ -35,6 +35,10 @@ services:
         class:    phpBB\SessionsAuthBundle\Security\FormAuthenticator
         autowire: true
         public:   true
+        arguments:
+            - "@security.password_encoder"
+            - "%phpbb_sessions_auth.session.target_page%"
+            - "%phpbb_sessions_auth.session.cookie_name%"
 
     phpbb.sessionsauthbundle.phpbb_encoder:
         class:  phpBB\SessionsAuthBundle\Security\Encoder
