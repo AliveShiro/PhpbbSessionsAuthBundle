@@ -42,6 +42,7 @@ class PhpbbSessionsAuthExtension extends Extension
         $container->setParameter('phpbb_sessions_auth.database.prefix', $config['database']['prefix']);
         $container->setParameter('phpbb_sessions_auth.session.cookie_name', $config['session']['cookie_name']);
         $container->setParameter('phpbb_sessions_auth.session.login_page', $config['session']['login_page']);
+        $container->setParameter('phpbb_sessions_auth.session.target_page', $config['session']['target_page']);
         $container->setParameter('phpbb_sessions_auth.session.force_login', $config['session']['force_login']);
         $container->setParameter('phpbb_sessions_auth.session.ip_check', $config['session']['ip_check']);
         $container->setParameter('phpbb_sessions_auth.roles', $config['roles']);
