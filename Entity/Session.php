@@ -1,16 +1,10 @@
 <?php
-/**
- *
- * @package phpBBSessionsAuthBundle
- * @copyright (c) phpBB Limited <https://www.phpbb.com>
- * @license MIT
- *
- */
+
 namespace phpBB\SessionsAuthBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Security\Core\Role\Role;
-use Symfony\Component\Security\Core\User\UserInterface;
+use Doctrine\ORM\Mapping\CustomIdGenerator;
+use Doctrine\ORM\Mapping\GeneratedValue;
 
 /**
  * Class Session
@@ -22,9 +16,10 @@ class Session
 {
     /**
      * @var string
-     * @ORM\Column(name="session_id", type="string")
      * @ORM\Id
-     * @ORM\GeneratedValue(strategy="IDENTITY")
+     * @ORM\Column(name="session_id", type="string", length=32)
+     * @GeneratedValue(strategy="CUSTOM")
+     * @CustomIdGenerator(class="phpBB\SessionsAuthBundle\Generator\SessionIdGenerator")
      */
     private $id;
 
@@ -102,20 +97,31 @@ class Session
     private $admin;
 
     /**
+     * Session constructor.
+     *
+     * @param User $user
+     *
+     * @throws \Exception
+     */
+    public function __construct(User $user)
+    {
+        $this->setUser($user);
+        $this->setForumId(0);
+        $this->setPage('index.php');
+        $this->setForwardedFor('');
+        $this->setAdmin(0);
+
+        $this->setLastVisit(time());
+        $this->setStart(time());
+        $this->setViewonline($user->getAllowViewonline());
+    }
+
+    /**
      * @return string
      */
     public function getId()
     {
         return $this->id;
-    }
-
-    /**
-     * @param string $id
-     */
-    public function setId($id)
-    {
-        $this->id = $id;
-        return $this;
     }
 
     /**
@@ -128,6 +134,8 @@ class Session
 
     /**
      * @param User $user
+     *
+     * @return Session
      */
     public function setUser($user)
     {
@@ -136,8 +144,9 @@ class Session
     }
 
     /**
-     * @param integer $ForumId
-     * @return Sessions
+     * @param $forumId
+     *
+     * @return Session
      */
     public function setForumId($forumId)
     {
@@ -155,7 +164,8 @@ class Session
 
     /**
      * @param integer $lastVisit
-     * @return Sessions
+     *
+     * @return Session
      */
     public function setLastVisit($lastVisit)
     {
@@ -173,7 +183,8 @@ class Session
 
     /**
      * @param integer $start
-     * @return Sessions
+     *
+     * @return Session
      */
     public function setStart($start)
     {
@@ -199,6 +210,8 @@ class Session
 
     /**
      * @param mixed $time
+     *
+     * @return Session
      */
     public function setTime($time)
     {
@@ -216,6 +229,8 @@ class Session
 
     /**
      * @param string $ip
+     *
+     * @return Session
      */
     public function setIp($ip)
     {
@@ -225,7 +240,8 @@ class Session
 
     /**
      * @param string $browser
-     * @return Sessions
+     *
+     * @return Session
      */
     public function setBrowser($browser)
     {
@@ -243,7 +259,8 @@ class Session
 
     /**
      * @param string $forwardedFor
-     * @return Sessions
+     *
+     * @return Session
      */
     public function setForwardedFor($forwardedFor)
     {
@@ -261,7 +278,8 @@ class Session
 
     /**
      * @param string $page
-     * @return Sessions
+     *
+     * @return Session
      */
     public function setPage($page)
     {
@@ -279,7 +297,8 @@ class Session
 
     /**
      * @param boolean $viewonline
-     * @return Sessions
+     *
+     * @return Session
      */
     public function setViewonline($viewonline)
     {
@@ -305,6 +324,7 @@ class Session
 
     /**
      * @param boolean $autologin
+     *
      * @return Session
      */
     public function setAutologin($autologin)
@@ -323,7 +343,8 @@ class Session
 
     /**
      * @param boolean $admin
-     * @return Sessions
+     *
+     * @return Session
      */
     public function setAdmin($admin)
     {

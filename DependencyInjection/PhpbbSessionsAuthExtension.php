@@ -10,6 +10,7 @@
 
 namespace phpBB\SessionsAuthBundle\DependencyInjection;
 
+use phpBB\SessionsAuthBundle\Subscriber\AuthenticationSubscriber;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
@@ -32,6 +33,10 @@ class PhpbbSessionsAuthExtension extends Extension
     {
         $configuration = new Configuration();
         $config = $this->processConfiguration($configuration, $configs);
+
+        $this->addAnnotatedClassesToCompile([
+            AuthenticationSubscriber::class,
+        ]);
 
         $container->setParameter('phpbb_sessions_auth.database.entity_manager', $config['database']['entity_manager']);
         $container->setParameter('phpbb_sessions_auth.database.prefix', $config['database']['prefix']);

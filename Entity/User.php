@@ -1376,7 +1376,7 @@ class User implements UserInterface
      */
     public function setOptions($options)
     {
-        $this->Options = $options;
+        $this->options = $options;
         return $this;
     }
 
@@ -1385,7 +1385,7 @@ class User implements UserInterface
      */
     public function getOptions()
     {
-        return $this->Options;
+        return $this->options;
     }
 
     /**
@@ -1642,6 +1642,8 @@ class User implements UserInterface
 
     /**
      * @param array $roles
+     *
+     * @return User
      */
     public function setRoles(array $roles)
     {
@@ -1700,7 +1702,7 @@ class User implements UserInterface
      */
     public function getName()
     {
-        return $this->name;
+        return $this->username;
     }
 
     /**

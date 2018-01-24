@@ -6,7 +6,7 @@
     "intergration",
     "bridge"
   ],
-  "version": "1.1.1",
+  "version": "1.2.0",
   "type": "symfony-bundle",
   "homepage": "http://www.phpbb.com",
   "license": "MIT",
@@ -33,7 +33,7 @@
     "phpunit/phpunit": "*",
     "symfony/var-dumper": "*"
   },
-  "minimum-stability": "dev",
+  "minimum-stability": "stable",
   "autoload": {
     "psr-4": {"phpBB\\SessionsAuthBundle\\": ""}
   }

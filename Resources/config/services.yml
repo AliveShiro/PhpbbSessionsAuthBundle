@@ -1,13 +1,24 @@
 services:
     phpbb.sessionsauthbundle.tblprefix_subscriber:
-        class: phpBB\SessionsAuthBundle\Subscriber\TablePrefixSubscriber
-        public: false
-        arguments: ["%phpbb_sessions_auth.database.prefix%"]
+        class:      phpBB\SessionsAuthBundle\Subscriber\TablePrefixSubscriber
+        public:     false
+        arguments:  ["%phpbb_sessions_auth.database.prefix%"]
         tags:
             - { name: doctrine.event_subscriber }
 
-    phpbb.sessionsauthbundle.phpbb_authenticator:
-        class:  phpBB\SessionsAuthBundle\Security\PhpbbSessionAuthenticator
+    phpbb.sessionsauthbundle.auth_subscriber:
+        class:      phpBB\SessionsAuthBundle\Subscriber\AuthenticationSubscriber
+        public:     true
+        autowire:   true
+        arguments:
+            - "@doctrine"
+            - "%phpbb_sessions_auth.database.entity_manager%"
+            - "%phpbb_sessions_auth.session.cookie_name%"
+        tags:
+            - { name: kernel.event_subscriber, event: security.interactive_login, method: onAuthenticationSuccess }
+
+    phpbb.sessionsauthbundle.phpbb_session_guard:
+        class:  phpBB\SessionsAuthBundle\Security\PhpbbSessionGuard
         public: false
         arguments:
             - "%phpbb_sessions_auth.session.cookie_name%"
@@ -15,10 +26,16 @@ services:
             - "%phpbb_sessions_auth.session.force_login%"
 
     phpbb.sessionsauthbundle.phpbb_user_provider:
-        class:  phpBB\SessionsAuthBundle\Security\PhpbbUserProvider
-        public: false
-        arguments: ["@doctrine", "%phpbb_sessions_auth.database.entity_manager%"]
-        calls: [[setRoles, ["%phpbb_sessions_auth.roles%"]], [setIpCheckLength, ["%phpbb_sessions_auth.session.ip_check%"]]]
+        class:      phpBB\SessionsAuthBundle\Security\PhpbbUserProvider
+        public:     false
+        arguments:  ["@doctrine", "%phpbb_sessions_auth.database.entity_manager%"]
+        calls:      [[setRoles, ["%phpbb_sessions_auth.roles%"]], [setIpCheckLength, ["%phpbb_sessions_auth.session.ip_check%"]]]
+
+    phpbb.sessionsauthbundle.phpbb_authenticator:
+        class:    phpBB\SessionsAuthBundle\Security\FormAuthenticator
+        autowire: true
+        public:   true
 
     phpbb.sessionsauthbundle.phpbb_encoder:
         class:  phpBB\SessionsAuthBundle\Security\Encoder
+        public: true
