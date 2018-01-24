@@ -6,6 +6,17 @@ services:
         tags:
             - { name: doctrine.event_subscriber }
 
+    phpbb.sessionsauthbundle.auth_subscriber:
+        class:      phpBB\SessionsAuthBundle\Subscriber\AuthenticationSubscriber
+        public:     true
+        autowire:   true
+        arguments:
+            - "@doctrine"
+            - "%phpbb_sessions_auth.database.entity_manager%"
+            - "%phpbb_sessions_auth.session.cookie_name%"
+        tags:
+            - { name: kernel.event_subscriber, event: security.interactive_login, method: onAuthenticationSuccess }
+
     phpbb.sessionsauthbundle.phpbb_session_guard:
         class:  phpBB\SessionsAuthBundle\Security\PhpbbSessionGuard
         public: false

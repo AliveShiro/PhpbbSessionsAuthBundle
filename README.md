@@ -85,9 +85,14 @@ security:
             pattern: ^/
             anonymous: true
             stateless: true # stateless should be set to true, or your symfony user may be stored in the session even if you logged out from the phpbb instance
+            # You can use the guard if you want to restore sessions if a cookie is set
             guard:
                 authenticators:
                     - "phpbb.sessionsauthbundle.phpbb_session_guard"
+            # You can use the authenticator if you want to provide a login form to your project, it will update the phpbb_sessions table and the cookie
+            simple_form:
+                authenticator: "phpbb.sessionsauthbundle.phpbb_authenticator"
+                            
 ```
 
 ## Missing functionality

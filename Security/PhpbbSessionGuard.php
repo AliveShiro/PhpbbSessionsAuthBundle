@@ -117,7 +117,7 @@ class PhpbbSessionGuard extends AbstractGuardAuthenticator
 
     /**
      * @param Request $request
-     * @param AuthenticationException $exception
+     * @param AuthenticationException $authException
      * @return RedirectResponse
      */
     public function start(Request $request, AuthenticationException $authException = null)
